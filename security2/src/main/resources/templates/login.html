@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>自定义登录页面</title>
+</head>
+<body>
+<div class="container">
+
+    <form th:action="@{/main/login}" method="post">
+
+        <label for="username">用户名</label>
+        <input type="text" class="form-control" id="username" name="username" autofocus="autofocus"/> <br/>
+
+
+        <label for="password">密码</label>
+        <input type="password" class="form-control" id="password" name="password"/> <br/>
+
+        <input type="submit" class="btn btn-default" value="登录"/>
+    </form>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,16 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: security
+  thymeleaf:
+    mode: XHTML
+    cache: false
+    prefix: classpath:/templates
+  profiles:
+    active: dev
+  http:
+    multipart:
+      max-file-size: 100Mb
+      max-request-size: 1000Mb
