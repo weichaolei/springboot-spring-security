@@ -3,12 +3,8 @@ package cn.focus.security.config;
 import cn.focus.security.component.MySecurityFilter;
 import cn.focus.security.service.MyAccessDeniedHandler;
 import cn.focus.security.service.MyUserDetailServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomizer;
-import org.springframework.boot.web.servlet.ErrorPage;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -16,6 +12,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
+import org.thymeleaf.extras.springsecurity4.dialect.SpringSecurityDialect;
 
 import javax.servlet.Filter;
 
@@ -28,7 +25,7 @@ import javax.servlet.Filter;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private static final String[] exclusivePaths = {"/main/login", "/login", "/css/**", "/js/**", "/fonts/**", "/favicon.ico"};
+    private static final String[] exclusivePaths = {"/main/login", "/main/logout", "/login", "/css/**", "/js/**", "/fonts/**", "/favicon.ico"};
 
     @Bean
     public Filter myFilterSecurityInterceptorFilter() {
@@ -49,13 +46,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new MyAccessDeniedHandler("/403");
     }
 
+    @Bean
+    public SpringSecurityDialect springSecurityDialect() {
+        return new SpringSecurityDialect();
+    }
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests().antMatchers(exclusivePaths).permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin().loginPage("/main/login")
-                .defaultSuccessUrl("/main/index");
+                .defaultSuccessUrl("/main/index")
+                .failureUrl("/main/login?error=true").permitAll()
+                .and().logout().logoutSuccessUrl("/main/login").permitAll()
+                .and().sessionManagement().maximumSessions(1);
         http.addFilterBefore(myFilterSecurityInterceptorFilter(), FilterSecurityInterceptor.class);
         http.exceptionHandling().accessDeniedHandler(getAccessDeniedHandler());
     }
@@ -70,4 +75,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsServiceBean());
     }
+
 }

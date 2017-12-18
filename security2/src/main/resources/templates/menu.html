@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+	<title>首页</title>
+</head>
+<body>
+<h1>您来了</h1>
+
+<form th:action="@{/logout}" method="post">
+    <input type="submit" value="Sign Out"/>
+</form>
+<h2>
+    test
+    <a href="/main/logout">退出</a>
+</h2>
+
+
+<div>
+
+	<ul>
+		<li sec:authorize="hasRole('ROLE_USER')"><a href="https://www.baidu.com">百度</a></li>
+		<li sec:authorize="hasRole('ROLE_ADMIN')"><a href="https://www.focus.cn"> 焦点</a></li>
+		<li sec:authorize="hasRole('ROLE_COMMON')"><a href="https://www.csdn.net/">csdn</a></li>
+	</ul>
+
+	<ul sec:authorize="hasRole('ROLE_USER')">
+		<li><a href="https://www.cnblogs.com/">博客园</a></li>
+		<li><a href="https://bj.lianjia.com/"> 链家</a></li>
+	</ul>
+</div>
+
+<div sec:authorize="hasAuthority('ROLE_USER')">
+	<h2> 尊贵的管理员大人 </h2>
+</div>
+<div sec:authorize="hasRole('ROLE_USER')">
+	<h2> 恭喜您有权限了 </h2>
+</div>
+<div sec:authentication="principal.userName">
+    对对对
+</div>
+<span sec:authentication="principal.authorities"></span>
+<div sec:authorize="isAuthenticated()">
+认证成功了
+</div>
+
+</body>
+</html>
